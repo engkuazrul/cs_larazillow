@@ -7,6 +7,13 @@ use App\Models\User;
 
 class ListingPolicy
 {
+    public function before( ? User $user, $ability)
+    {
+        if ($user?->is_admin/*&& $ability === 'update'*/) {
+            return true;
+        }
+    }
+
     /**
      * Determine whether the user can view any models.
      */
@@ -26,7 +33,7 @@ class ListingPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user) : bool
     {
         return true;
     }
@@ -36,7 +43,7 @@ class ListingPolicy
      */
     public function update(User $user, Listing $listing): bool
     {
-        return true;
+        return $user->id === $listing->by_user_id;
     }
 
     /**
@@ -44,7 +51,7 @@ class ListingPolicy
      */
     public function delete(User $user, Listing $listing): bool
     {
-        return true;
+        return $user->id === $listing->by_user_id;
     }
 
     /**
@@ -52,7 +59,7 @@ class ListingPolicy
      */
     public function restore(User $user, Listing $listing): bool
     {
-        return true;
+        return $user->id === $listing->by_user_id;
     }
 
     /**
@@ -60,6 +67,6 @@ class ListingPolicy
      */
     public function forceDelete(User $user, Listing $listing): bool
     {
-        return true;
+        return $user->id === $listing->by_user_id;
     }
 }
